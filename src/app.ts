@@ -12,8 +12,10 @@ app.use(cors());
 app.use('/api/products', BookRoutes);
 app.use('/api/orders', OrderRoutes);
 
-app.get('/', (req: Request, res: Response) => {
-  console.log('Hello world');
+app.get('/', (req, res) => {
+    res.status(200).json({
+        message: "welcome to the server 3000"
+    })
 });
 
 export default app;
