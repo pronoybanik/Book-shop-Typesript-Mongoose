@@ -3,7 +3,7 @@ import { IOrder } from './Order.interface';
 
 const orderSchema = new mongoose.Schema<IOrder>(
   {
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Book',
