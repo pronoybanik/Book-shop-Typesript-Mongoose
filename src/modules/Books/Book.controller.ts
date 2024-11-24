@@ -90,7 +90,7 @@ const updateBook = async (req: Request, res: Response) => {
     const result = await BooksServices.upDateBookFromDB(id, bookData);
 
     res.status(200).json({
-      message: 'Book was updated successfully',
+      message: 'Book updated successfully',
       success: true,
       data: result,
     });
