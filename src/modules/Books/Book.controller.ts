@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { BooksServices } from './Book.service';
+import { bookSchemaValidation } from './Book.validation';
 
 const getAllBooks = async (req: Request, res: Response) => {
   try {
@@ -35,16 +36,26 @@ const createBook = async (req: Request, res: Response) => {
   try {
     const book = req.body;
 
-    const result = await BooksServices.createBooksIntoDB(book);
+    const { error, value } = bookSchemaValidation.validate(book);
+
+    const result = await BooksServices.createBooksIntoDB(value);
+
+    if (error) {
+      res.status(500).json({
+        success: false,
+        message: 'something went wrong',
+        error: error.details,
+      });
+    }
 
     res.status(200).json({
       message: 'Book is create successfully',
       success: true,
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
-      message: 'something went wrong',
+      message: error.message || 'something went wrong',
       success: false,
       err: error,
     });

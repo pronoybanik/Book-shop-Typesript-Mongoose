@@ -3,11 +3,10 @@ import { IOrder } from './Order.interface';
 
 const orderSchema = new mongoose.Schema<IOrder>(
   {
-    email: { type: String, required: true, unique: true },
+    email: { type: String, unique: true },
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Book',
-      required: true,
     },
     quantity: { type: Number },
     totalPrice: { type: Number },
