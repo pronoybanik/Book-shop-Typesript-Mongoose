@@ -1,8 +1,8 @@
 import express from 'express';
 import { OrderController } from './Order.controller';
-const route = express.Router();
+const routes = express.Router();
 
-route.post('/', OrderController.createOrder);
-route.get('/revenue', OrderController.getTotalRevenue);
+routes.post('/', OrderController.createOrder);
+routes.get('/revenue', OrderController.getTotalRevenue);
 
-export const OrderRoutes = route;
+export const OrderRoutes = routes;
