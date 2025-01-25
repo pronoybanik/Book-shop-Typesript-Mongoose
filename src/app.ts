@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ credentials: true }));
 
-// routes
+// routes...
 app.use('/api/products', BookRoutes);
 app.use('/api/orders', OrderRoutes);
 app.use('/api/user', UserRoutes);
