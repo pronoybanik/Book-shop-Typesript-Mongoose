@@ -20,7 +20,6 @@ const createUser = catchAsync(async (req, res, next) => {
 
 const loginUser = catchAsync(async (req, res) => {
     const result = await UserServices.loginUser(req.body);
-
     const { refreshToken, accessToken } = result;
 
     res.cookie('refreshToken', refreshToken, {

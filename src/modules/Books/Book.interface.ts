@@ -6,4 +6,5 @@ export type IBook = {
   description: string;
   quantity: number;
   inStock: boolean;
+  image: string;
 };

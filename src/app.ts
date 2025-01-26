@@ -12,7 +12,7 @@ const app = express();
 //parsers
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true }));
+app.use(cors({origin: ['http://localhost:5173'], credentials: true }));
 
 // routes...
 app.use('/api/products', BookRoutes);

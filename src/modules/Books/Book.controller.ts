@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { BooksServices } from './Book.service';
-import { bookSchemaValidation } from './Book.validation';
+import catchAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendRespons';
+import httpStatus from 'http-status';
 
 const getAllBooks = async (req: Request, res: Response) => {
   try {
@@ -8,12 +10,12 @@ const getAllBooks = async (req: Request, res: Response) => {
 
     const query = searchTerm
       ? {
-          $or: [
-            { title: { $regex: searchTerm, $options: 'i' } },
-            { author: { $regex: searchTerm, $options: 'i' } },
-            { category: { $regex: searchTerm, $options: 'i' } },
-          ],
-        }
+        $or: [
+          { title: { $regex: searchTerm, $options: 'i' } },
+          { author: { $regex: searchTerm, $options: 'i' } },
+          { category: { $regex: searchTerm, $options: 'i' } },
+        ],
+      }
       : {};
 
     const result = await BooksServices.getAllBookSFromDB(query);
@@ -32,35 +34,18 @@ const getAllBooks = async (req: Request, res: Response) => {
   }
 };
 
-const createBook = async (req: Request, res: Response) => {
-  try {
-    const book = req.body;
+const createBook = catchAsync(async (req, res) => {
+  const book = req.body;
+  const result = await BooksServices.createBooksIntoDB(book);
 
-    const { error, value } = bookSchemaValidation.validate(book);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book create successfully',
+    data: result,
+  });
+});
 
-    const result = await BooksServices.createBooksIntoDB(value);
-
-    if (error) {
-      res.status(500).json({
-        success: false,
-        message: 'something went wrong',
-        error: error.details,
-      });
-    }
-
-    res.status(200).json({
-      message: 'Book is create successfully',
-      success: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      message: error.message || 'something went wrong',
-      success: false,
-      err: error,
-    });
-  }
-};
 
 const getBookById = async (req: Request, res: Response) => {
   try {
