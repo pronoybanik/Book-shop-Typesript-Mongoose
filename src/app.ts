@@ -4,6 +4,8 @@ import { BookRoutes } from './modules/Books/Book.route';
 import { OrderRoutes } from './modules/Orders/Order.route';
 import { UserRoutes } from './modules/User/user.route';
 import cookieParser from 'cookie-parser';
+import globalErrorHandler from './middlewares/globalErrorhandler';
+import NotFound from './middlewares/notFound';
 
 const app = express();
 
@@ -22,5 +24,12 @@ app.get('/', (req, res) => {
     message: 'welcome to the server 3000',
   });
 });
+
+
+
+// Global error handling
+app.use(globalErrorHandler);
+
+app.use(NotFound);
 
 export default app;
