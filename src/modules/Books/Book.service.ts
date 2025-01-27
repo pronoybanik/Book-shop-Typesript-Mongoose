@@ -1,10 +1,24 @@
 import mongoose, { ObjectId } from 'mongoose';
 import { IBook } from './Book.interface';
 import { BooksModule } from './Book.module';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { BookSearchableFields } from './Book.constant';
 
-const getAllBookSFromDB = async (query: any) => {
-  const result = await BooksModule.find(query);
-  return result;
+const getAllBookSFromDB = async (query: Record<string, unknown>,) => {
+  const bookQuery = new QueryBuilder(BooksModule.find(), query)
+    .search(BookSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await bookQuery.modelQuery;
+  const meta = await bookQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const createBooksIntoDB = async (book: IBook) => {

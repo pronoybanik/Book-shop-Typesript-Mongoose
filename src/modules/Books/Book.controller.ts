@@ -4,35 +4,17 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendRespons';
 import httpStatus from 'http-status';
 
-const getAllBooks = async (req: Request, res: Response) => {
-  try {
-    const searchTerm = req.query.searchTerm as string;
+const getAllBooks = catchAsync(async (req, res) => {
+  const result = await BooksServices.getAllBookSFromDB(req.query);
 
-    const query = searchTerm
-      ? {
-        $or: [
-          { title: { $regex: searchTerm, $options: 'i' } },
-          { author: { $regex: searchTerm, $options: 'i' } },
-          { category: { $regex: searchTerm, $options: 'i' } },
-        ],
-      }
-      : {};
-
-    const result = await BooksServices.getAllBookSFromDB(query);
-
-    res.status(200).json({
-      message: 'Books retrieved successfully',
-      status: true,
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: 'something went wrong',
-      success: false,
-      err: error,
-    });
-  }
-};
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Books retrieved successfully',
+    meta: result.meta,
+    data: result.result,
+  });
+});
 
 const createBook = catchAsync(async (req, res) => {
   const book = req.body;
@@ -41,73 +23,47 @@ const createBook = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Book create successfully',
+    message: 'Book created successfully',
     data: result,
   });
 });
 
+const getBookById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await BooksServices.getBookIdFromDB(id);
 
-const getBookById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book retrieved successfully',
+    data: result,
+  });
+});
 
-    const result = await BooksServices.getBookIdFromDB(id);
+const updateBook = catchAsync(async (req, res) => {
+  const bookData = req.body;
+  const { id } = req.params;
+  const result = await BooksServices.upDateBookFromDB(id, bookData);
 
-    res.status(200).json({
-      message: 'Book is retrieved successfully',
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: 'something went wrong',
-      success: false,
-      err: error,
-    });
-  }
-};
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book updated successfully',
+    data: result,
+  });
+});
 
-const updateBook = async (req: Request, res: Response) => {
-  try {
-    const bookData = req.body;
-    const { id } = req.params;
+const deleteBook = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await BooksServices.deleteBookFromDB(id);
 
-    const result = await BooksServices.upDateBookFromDB(id, bookData);
-
-    res.status(200).json({
-      message: 'Book updated successfully',
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: 'something went wrong',
-      success: false,
-      err: error,
-    });
-  }
-};
-
-const deleteBook = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    console.log('controller id ', id);
-
-    const result = await BooksServices.deleteBookFromDB(id);
-
-    res.status(200).json({
-      message: 'Book deleted successfully',
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: 'something went wrong',
-      success: false,
-      err: error,
-    });
-  }
-};
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book deleted successfully',
+    data: result,
+  });
+});
 
 export const BookControllers = {
   getAllBooks,
