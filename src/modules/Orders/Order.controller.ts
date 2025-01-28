@@ -1,35 +1,45 @@
 import { Request, Response } from 'express';
 import { OrderService } from './Order.service';
 import { orderSchemaValidation } from './Order.validation';
+import catchAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendRespons';
+import httpStatus from 'http-status';
 
-const createOrder = async (req: Request, res: Response) => {
-  try {
-    const data = req.body;
+const createOrder = catchAsync(async (req, res) => {
+  const data = req.body;
+  const result = await OrderService.createOrderFromDB(data);
 
-    const { error, value } = orderSchemaValidation.validate(data);
-    const result = await OrderService.createOrderFromDB(value);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order created successfully',
+    data: result,
+  });
+})
 
-    if (error) {
-      res.status(500).json({
-        success: false,
-        message: 'something went wrong',
-        error: error.details,
-      });
-    }
+const getAllOrder = catchAsync(async (req, res) => {
 
-    res.status(200).json({
-      message: 'Order created successfully',
-      status: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      message: error.message || 'something went wrong',
-      success: false,
-      err: error,
-    });
-  }
-};
+  const result = await OrderService.getAllOrderIntoDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Get all order',
+    data: result,
+  });
+});
+
+const deleteOrder = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const result = await OrderService.deleteOrderFromDB(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Delete order successfully',
+    data: result,
+  });
+})
 
 const getTotalRevenue = async (req: Request, res: Response) => {
   try {
@@ -54,4 +64,6 @@ const getTotalRevenue = async (req: Request, res: Response) => {
 export const OrderController = {
   createOrder,
   getTotalRevenue,
+  getAllOrder,
+  deleteOrder
 };

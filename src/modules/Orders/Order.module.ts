@@ -1,19 +1,14 @@
 import mongoose from 'mongoose';
 import { IOrder } from './Order.interface';
 
-const orderSchema = new mongoose.Schema<IOrder>(
-  {
-    email: { type: String, unique: true },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Book',
-    },
+const orderSchema = new mongoose.Schema({
+  products: [{
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
     quantity: { type: Number },
-    totalPrice: { type: Number },
-  },
-  {
-    timestamps: true,
-  },
-);
+  }],
+  totalPrice: { type: Number, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  createdAt: { type: Date, default: Date.now },
+});
 
 export const OrderModule = mongoose.model<IOrder>('Order', orderSchema);
