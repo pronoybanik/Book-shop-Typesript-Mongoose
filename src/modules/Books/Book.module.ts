@@ -25,8 +25,7 @@ const bookSchema = new mongoose.Schema<IBook>(
       required: true,
     },
     image: {
-      type: String,
-      required: true,
+      type: String
     },
     quantity: {
       type: Number,

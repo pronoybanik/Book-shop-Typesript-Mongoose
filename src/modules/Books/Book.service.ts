@@ -41,11 +41,10 @@ const upDateBookFromDB = async (id: string, data: IBook) => {
 };
 
 const deleteBookFromDB = async (id: string) => {
-  const objectId = new mongoose.Types.ObjectId(id);
-  const result = await BooksModule.deleteOne({ _id: objectId });
-  console.log('result', result);
-  return result;
+  const deleteStudent = await BooksModule.deleteOne({ _id: id });
+  return deleteStudent;
 };
+
 
 export const BooksServices = {
   createBooksIntoDB,

@@ -6,7 +6,7 @@ export interface TUser {
   email: string;
   password: string;
   role: 'admin' | 'user';
-  status: 'in-progress' | 'blocked';
+  status: 'active' | 'blocked';
 }
 
 export type TLoginUser = {

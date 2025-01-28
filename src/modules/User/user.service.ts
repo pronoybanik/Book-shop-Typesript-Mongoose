@@ -4,6 +4,7 @@ import { UserModel } from "./user.module";
 import httpStatus from 'http-status';
 import { createToken } from "./user.utils";
 import config from "../../app/config";
+import mongoose from "mongoose";
 
 const createUserIntoBD = async (payload: TUser) => {
     const newStudent = await UserModel.create(payload);
@@ -16,6 +17,13 @@ const loginUser = async (payload: TLoginUser) => {
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+    }
+
+    // checking if the user is blocked
+    const userStatus = user?.status;
+
+    if (userStatus === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked !');
     }
 
     //checking if the password is correct
@@ -45,7 +53,22 @@ const loginUser = async (payload: TLoginUser) => {
     };
 };
 
+const getAllUserIntoDB = async () => {
+    const result = await UserModel.find()
+    return result;
+};
+
+const updateUserIntoDB = async (id: string, data: TUser) => {
+    const objectId = new mongoose.Types.ObjectId(id);
+    const result = await UserModel.updateOne({ _id: objectId }, data, {
+        runValidators: true,
+    });
+    return result;
+};
+
 export const UserServices = {
     createUserIntoBD,
-    loginUser
+    loginUser,
+    getAllUserIntoDB,
+    updateUserIntoDB
 };

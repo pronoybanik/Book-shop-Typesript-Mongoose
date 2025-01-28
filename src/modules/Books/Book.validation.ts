@@ -7,7 +7,7 @@ const bookValidateSchema = z.object({
     price: z.number(),
     category: z.enum(["Fiction", "Science", "SelfDevelopment", "Poetry", "Religious"]),
     description: z.string(),
-    image: z.string(),
+    image: z.string().optional(),
     quantity: z.number(),
     inStock: z.boolean(),
   })
