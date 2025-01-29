@@ -13,6 +13,7 @@ routes.post('/login',
     UserControllers.loginUser);
 
 routes.get("/", UserControllers.getAllUser);
+routes.get("/:id", UserControllers.getSingleUser);
 routes.put("/:id", UserControllers.updateUser);
 
 export const UserRoutes = routes;

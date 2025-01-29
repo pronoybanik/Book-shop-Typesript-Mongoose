@@ -66,9 +66,15 @@ const updateUserIntoDB = async (id: string, data: TUser) => {
     return result;
 };
 
+const getSingleUserIntoDB = async (id: string,) => {   
+    const result = await UserModel.findById(id);
+    return result;
+};
+
 export const UserServices = {
     createUserIntoBD,
     loginUser,
+    getSingleUserIntoDB,
     getAllUserIntoDB,
     updateUserIntoDB
 };

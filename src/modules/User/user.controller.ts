@@ -37,6 +37,17 @@ const loginUser = catchAsync(async (req, res) => {
     });
 });
 
+const getSingleUser = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await UserServices.getSingleUserIntoDB(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Get all user by Id!',
+        data: result
+    });
+});
 const getAllUser = catchAsync(async (req, res) => {
     const result = await UserServices.getAllUserIntoDB();
 
@@ -65,5 +76,6 @@ export const UserControllers = {
     createUser,
     loginUser,
     getAllUser,
-    updateUser
+    updateUser,
+    getSingleUser
 };

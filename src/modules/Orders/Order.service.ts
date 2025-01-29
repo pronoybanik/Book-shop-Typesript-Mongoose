@@ -34,13 +34,13 @@ const createOrderFromDB = async (order: IOrder) => {
       userId: user._id,
     });
 
-    // Save the order
+    // Save the order..
     await orderToCreate.save();
 
-    return orderToCreate;  // Return the created order, handled by controller
+    return orderToCreate;
 
   } catch (error) {
-    throw new Error(error?.message); // Propagate error to controller
+    throw new Error(error?.message);
   }
 };
 
