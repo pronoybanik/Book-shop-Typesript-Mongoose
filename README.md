@@ -7,3 +7,5 @@ Main Features API
 5. Delete a Book - Remove a book from the inventory.
 6. Order a Book - Place an order, which adjusts the inventory.
 7. Calculate Revenue - Calculate the total revenue from all orders using aggregation.
+8. user - create a user api and login user api 
+

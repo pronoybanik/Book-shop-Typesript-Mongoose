@@ -39,10 +39,15 @@ const createOrderFromDB = async (order: IOrder) => {
 
     return orderToCreate;
 
-  } catch (error) {
-    throw new Error(error?.message);
+  } catch (err: unknown) {
+    // Ensure the error is a string or has a message property
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    throw new Error('An unknown error occurred');
   }
 };
+
 
 const getAllOrderIntoDB = async () => {
   const result = await OrderModule.find()

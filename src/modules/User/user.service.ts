@@ -14,6 +14,8 @@ const createUserIntoBD = async (payload: TUser) => {
 const loginUser = async (payload: TLoginUser) => {
     // checking if the user is exist
     const user = await UserModel.isUserExistsByCustomId(payload.email);
+    console.log(user);
+    
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
@@ -33,19 +35,19 @@ const loginUser = async (payload: TLoginUser) => {
     const jwtPayload = {
         userId: user._id,
         role: user.role,
-    };
+    };    
 
     const accessToken = createToken(
         jwtPayload,
         config.jwt_access_secret as string,
         config.jwt_access_expires_in as string,
-    );
-
-    const refreshToken = createToken(
+      );
+    
+      const refreshToken = createToken(
         jwtPayload,
         config.jwt_refresh_secret as string,
         config.jwt_refresh_expires_in as string,
-    );
+      );
 
     return {
         accessToken,
