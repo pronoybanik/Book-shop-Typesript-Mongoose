@@ -5,6 +5,8 @@ import httpStatus from 'http-status';
 import { createToken } from "./user.utils";
 import config from "../../app/config";
 import mongoose from "mongoose";
+import bcrypt from 'bcrypt';
+import { JwtPayload } from "jsonwebtoken";
 
 const createUserIntoBD = async (payload: TUser) => {
     const newStudent = await UserModel.create(payload);
@@ -12,10 +14,10 @@ const createUserIntoBD = async (payload: TUser) => {
 };
 
 const loginUser = async (payload: TLoginUser) => {
+
     // checking if the user is exist
     const user = await UserModel.isUserExistsByCustomId(payload.email);
-    console.log(user);
-    
+
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
@@ -35,19 +37,19 @@ const loginUser = async (payload: TLoginUser) => {
     const jwtPayload = {
         userId: user._id,
         role: user.role,
-    };    
+    };
 
     const accessToken = createToken(
         jwtPayload,
         config.jwt_access_secret as string,
         config.jwt_access_expires_in as string,
-      );
-    
-      const refreshToken = createToken(
+    );
+
+    const refreshToken = createToken(
         jwtPayload,
         config.jwt_refresh_secret as string,
         config.jwt_refresh_expires_in as string,
-      );
+    );
 
     return {
         accessToken,
@@ -68,15 +70,55 @@ const updateUserIntoDB = async (id: string, data: TUser) => {
     return result;
 };
 
-const getSingleUserIntoDB = async (id: string,) => {   
+const getSingleUserIntoDB = async (id: string,) => {
     const result = await UserModel.findById(id);
     return result;
 };
+
+const changePassword = async (
+    userData: JwtPayload,
+    payload: { oldPassword: string; newPassword: string },
+) => {
+
+    // Get user with password field included
+    const user = await UserModel.findById(userData.userId).select('+password');
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
+    }
+
+    if (user.status === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!');
+    }
+
+    // Check password
+    const isMatched = await UserModel.isPasswordMatched(payload.oldPassword, user.password);
+    if (!isMatched) {
+        throw new AppError(httpStatus.FORBIDDEN, 'Password does not match');
+    }
+
+    // Hash new password
+    const newHashedPassword = await bcrypt.hash(
+        payload.newPassword,
+        Number(config.bcrypt_salt_rounds),
+    );
+
+    // Update password
+    await UserModel.findByIdAndUpdate(userData.userId, {
+        password: newHashedPassword,
+        needsPasswordChange: false,
+        passwordChangedAt: new Date(),
+    });
+
+    return null;
+};
+
 
 export const UserServices = {
     createUserIntoBD,
     loginUser,
     getSingleUserIntoDB,
     getAllUserIntoDB,
-    updateUserIntoDB
+    updateUserIntoDB,
+    changePassword
 };

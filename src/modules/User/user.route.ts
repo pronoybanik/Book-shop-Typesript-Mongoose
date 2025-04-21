@@ -2,6 +2,7 @@ import express from 'express';
 import { UserControllers } from './user.controller';
 import validateRequest from '../../middlewares/validateRequest';
 import { UserValidation } from './user.validation';
+import auth from '../../middlewares/auth';
 const routes = express.Router();
 
 routes.post('/register',
@@ -11,6 +12,12 @@ routes.post('/register',
 routes.post('/login',
     validateRequest(UserValidation.loginValidationSchema),
     UserControllers.loginUser);
+
+routes.post(
+    '/change-password',
+    auth(),
+    UserControllers.changePassword,
+);
 
 routes.get("/", UserControllers.getAllUser);
 routes.get("/:id", UserControllers.getSingleUser);

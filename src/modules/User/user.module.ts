@@ -27,7 +27,14 @@ const userSchema = new Schema<TUser, UserInterface>(
             type: String,
             enum: ['active', 'blocked'],
             default: 'active',
-        }
+        },
+        needsPasswordChange: {
+            type: Boolean,
+            default: true,
+        },
+        passwordChangedAt: {
+            type: Date,
+        },
     },
     {
         timestamps: true,

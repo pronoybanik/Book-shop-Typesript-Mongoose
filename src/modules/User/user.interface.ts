@@ -7,6 +7,8 @@ export interface TUser {
   password: string;
   role: 'admin' | 'user';
   status: 'active' | 'blocked';
+  needsPasswordChange: boolean,
+  passwordChangedAt: Date,
 }
 
 export type TLoginUser = {
@@ -26,4 +28,12 @@ export interface UserInterface extends Model<TUser> {
     passwordChangedTimestamp: Date,
     jwtIssuedTimestamp: number,
   ): boolean;
-}
+};
+
+
+export const USER_ROLE = {
+  user: 'user',
+  admin: 'admin',
+} as const;
+
+export type TUserRole = keyof typeof USER_ROLE;
