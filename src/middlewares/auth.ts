@@ -35,7 +35,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
         
         const user = await UserModel.findById(userId);
         
-        console.log("decoded", user);
 
         if (!user) {
             throw new AppError(httpStatus.NOT_FOUND, 'User not found!');

@@ -79,7 +79,6 @@ const changePassword = async (
     userData: JwtPayload,
     payload: { oldPassword: string; newPassword: string },
 ) => {
-
     // Get user with password field included
     const user = await UserModel.findById(userData.userId).select('+password');
 

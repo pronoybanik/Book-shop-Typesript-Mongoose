@@ -4,6 +4,7 @@ import { orderSchemaValidation } from './Order.validation';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendRespons';
 import httpStatus from 'http-status';
+import { date } from 'joi';
 
 const createOrder = catchAsync(async (req, res) => {
   const data = req.body;
@@ -15,7 +16,7 @@ const createOrder = catchAsync(async (req, res) => {
     message: 'Order created successfully',
     data: result,
   });
-})
+});
 
 const getAllOrder = catchAsync(async (req, res) => {
 
@@ -61,9 +62,29 @@ const getTotalRevenue = async (req: Request, res: Response) => {
   }
 };
 
+const getUserOrderProduct = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await OrderService.getUserOrderProductFromDB(userId);
+
+    res.status(200).json({
+      message: 'get order products successfully',
+      status: true,
+      date: result
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: 'Something went wrong',
+      success: false,
+      err: error,
+    });
+  }
+};
+
 export const OrderController = {
   createOrder,
   getTotalRevenue,
   getAllOrder,
-  deleteOrder
+  deleteOrder,
+  getUserOrderProduct
 };

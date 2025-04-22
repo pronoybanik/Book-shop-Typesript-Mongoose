@@ -83,9 +83,17 @@ const deleteOrderFromDB = async (id: string) => {
   return deleteStudent;
 };
 
+const getUserOrderProductFromDB = async (userId: string) => {
+  const orders = await OrderModule.find({ userId })
+    .populate('products.productId')
+    .populate('userId');
+  return orders;
+};
+
 export const OrderService = {
   createOrderFromDB,
   calculateTotalRevenue,
   getAllOrderIntoDB,
-  deleteOrderFromDB
+  deleteOrderFromDB,
+  getUserOrderProductFromDB
 };

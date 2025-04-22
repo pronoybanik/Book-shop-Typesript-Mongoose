@@ -14,8 +14,6 @@ const getAllBookSFromDB = async (query: Record<string, unknown>,) => {
 
   const result = await bookQuery.modelQuery;
   const meta = await bookQuery.countTotal();
-  console.log('Result:', result.length);  // Log the result to check if data is returned
-  // console.log('Meta:', meta);
 
   return {
     meta,
