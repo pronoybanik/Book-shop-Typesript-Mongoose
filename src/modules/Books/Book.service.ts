@@ -4,7 +4,7 @@ import { BooksModule } from './Book.module';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { BookSearchableFields } from './Book.constant';
 
-const getAllBookSFromDB = async (query: Record<string, unknown>,) => {
+const getAllBookSFromDB = async (query: Record<string, unknown>) => {
   const bookQuery = new QueryBuilder(BooksModule.find(), query)
     .search(BookSearchableFields)
     .filter()

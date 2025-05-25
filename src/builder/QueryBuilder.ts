@@ -1,4 +1,3 @@
-
 import { FilterQuery, Query } from 'mongoose';
 
 class QueryBuilder<T> {
@@ -18,7 +17,7 @@ class QueryBuilder<T> {
           (field) =>
             ({
               [field]: { $regex: searchTerm, $options: 'i' },
-            }) as FilterQuery<T>,
+            }) as FilterQuery<T>
         ),
       });
     }
@@ -27,23 +26,44 @@ class QueryBuilder<T> {
   }
 
   filter() {
-    const queryObj = { ...this.query }; // copy
+    const queryObj = { ...this.query };
 
-    // Filtering
+    // Exclude non-filter fields
     const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+    // Use a type-safe plain object for dynamic filtering
+    const filterConditions: Record<string, any> = {};
+
+    // Range filter logic for fields like price
+    const rangeFields = ['price']; // Add more like 'rating', 'year' as needed
+
+    rangeFields.forEach((field) => {
+      const min = queryObj[`${field}Min`];
+      const max = queryObj[`${field}Max`];
+
+      if (min || max) {
+        filterConditions[field] = {};
+        if (min) filterConditions[field]['$gte'] = Number(min);
+        if (max) filterConditions[field]['$lte'] = Number(max);
+        delete queryObj[`${field}Min`];
+        delete queryObj[`${field}Max`];
+      }
+    });
+
+    // Merge remaining filters
+    Object.assign(filterConditions, queryObj);
+
+    this.modelQuery = this.modelQuery.find(filterConditions as FilterQuery<T>);
 
     return this;
   }
+
 
   sort() {
     const sort =
       (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt';
     this.modelQuery = this.modelQuery.sort(sort as string);
-
     return this;
   }
 
@@ -53,17 +73,16 @@ class QueryBuilder<T> {
     const skip = (page - 1) * limit;
 
     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
-
     return this;
   }
 
   fields() {
     const fields =
       (this?.query?.fields as string)?.split(',')?.join(' ') || '-__v';
-
     this.modelQuery = this.modelQuery.select(fields);
     return this;
   }
+
   async countTotal() {
     const totalQueries = this.modelQuery.getFilter();
     const total = await this.modelQuery.model.countDocuments(totalQueries);
