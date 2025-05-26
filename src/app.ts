@@ -6,6 +6,7 @@ import { UserRoutes } from './modules/User/user.route';
 import cookieParser from 'cookie-parser';
 import globalErrorHandler from './middlewares/globalErrorhandler';
 import NotFound from './middlewares/notFound';
+import { BlogRoutes } from './modules/blogs/blog.route';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(cors({ origin: ['https://book-shop-frontend-eight.vercel.app','http://lo
 app.use('/api/products', BookRoutes);
 app.use('/api/orders', OrderRoutes);
 app.use('/api/user', UserRoutes);
+app.use('/api/blogs', BlogRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).json({
