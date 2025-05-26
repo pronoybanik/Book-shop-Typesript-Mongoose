@@ -40,6 +40,11 @@ const upDateBookFromDB = async (id: string, data: IBook) => {
   return result;
 };
 
+const getBooksByCategory = async (categoryData: string) => {
+  const result = await BooksModule.find({ category: categoryData });
+  return result;
+};
+
 const deleteBookFromDB = async (id: string) => {
   const deleteStudent = await BooksModule.deleteOne({ _id: id });
   return deleteStudent;
@@ -52,4 +57,5 @@ export const BooksServices = {
   getBookIdFromDB,
   upDateBookFromDB,
   deleteBookFromDB,
+  getBooksByCategory
 };

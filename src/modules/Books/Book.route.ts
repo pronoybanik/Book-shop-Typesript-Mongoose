@@ -6,6 +6,7 @@ const routes = express.Router();
 
 routes.get('/', BookControllers.getAllBooks);
 routes.get('/:id', BookControllers.getBookById);
+routes.get('/category/:categoryValue', BookControllers.getBooksByCategory);
 routes.post('/',
     validateRequest(BookValidation.bookValidateSchema),
     BookControllers.createBook);
@@ -13,3 +14,4 @@ routes.put('/:id', BookControllers.updateBook);
 routes.delete('/:id', BookControllers.deleteBook);
 
 export const BookRoutes = routes;
+
