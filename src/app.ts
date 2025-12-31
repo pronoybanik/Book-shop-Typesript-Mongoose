@@ -13,8 +13,8 @@ const app = express();
 //parsers
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: ['https://book-shop-frontend-eight.vercel.app','http://localhost:5173'], credentials: true }));
-// app.use(cors());
+// app.use(cors({ origin: ['https://book-shop-frontend-eight.vercel.app','http://localhost:5173'], credentials: true }));
+app.use(cors());
 
 // routes...
 app.use('/api/products', BookRoutes);
