@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: ['https://book-shop-frontend-eight.vercel.app','http://localhost:5173'], credentials: true }));
-// app.use(cors({origin: ['https://book-shop-frontend-eight.vercel.app'], credentials: true }));
+// app.use(cors());
 
 // routes...
 app.use('/api/products', BookRoutes);
@@ -28,11 +28,11 @@ app.get('/', (req, res) => {
   });
 });
 
-
+// 404 Not Found handler should be registered before the error handler
+app.use(NotFound);
 
 // Global error handling
 app.use(globalErrorHandler);
 
-app.use(NotFound);
 
 export default app;
